@@ -14,15 +14,25 @@ Created on Fri Mar 23 16:49:13 2018
 # Dependencies
 import tweepy
 import config
+import os
 import pandas as pd
 import matplotlib.pyplot as plt
 import time
 from datetime import datetime
 
+
+consumer_key = str(os.getenv("consumer_key"))
+consumer_secret = str(os.getenv("consumer_secret"))
+access_token = str(os.getenv("access_token"))
+access_token_secret = str(os.getenv("access_token_secret"))
+
+
 # Setup Tweepy API Authentication
-auth = tweepy.OAuthHandler(config.consumer_key, config.consumer_secret)
-auth.set_access_token(config.access_token, config.access_token_secret)
+auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth, parser=tweepy.parsers.JSONParser())
+
+
 
 # Setup Vader Sentiment Analyzer
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
@@ -71,20 +81,20 @@ def trigger(tweet):
             
 def listen(mention,oldest_tweet):
     """ listen
-    performs a search for a tweet with the mention of the bot handle
-    """
+        performs a search for a tweet with the mention of the bot handle
+        """
     tweet_seen = []
     if oldest_tweet == '':
         start_tweet = 0
     else:
         start_tweet = oldest_tweet
-        
+    
     public_tweets = api.search(
-            mention,
-            count=20,
-            result_type="recent",
-            max_id='')
-  
+                               mention,
+                               count=20,
+                               result_type="recent",
+                               max_id='')
+
     for tweet in public_tweets["statuses"]:
         tweetid = tweet['id']
         message = tweet['text']
@@ -98,6 +108,7 @@ def listen(mention,oldest_tweet):
                     reply(user['screen_name'],tweetid)
     
     return(max(tweet_seen))
+
     
 def analyze(target_user):
     """ analyze
@@ -133,8 +144,8 @@ def plotit():
     """ ploptit
     creates a plot of the values given
     """   
-    
-    with open("media_sentiment_tweeter.csv") as twfile:
+    try:
+        with open("media_sentiment_tweeter.csv") as twfile:
             twanalysis = pd.read_csv(twfile,delimiter=',')
             mention = twanalysis['user'].unique()
             twanalysis.plot(x="tn", y="compound", marker='o',label=mention[0])
@@ -150,10 +161,10 @@ def plotit():
             plt.legend(loc='best')
             plt.show()
             return True
-    '''
+    except:
         print("error with twitter data retrieval from csv")
         return False
-    '''    
+
 def reply(tweet_author, tweet_id):
     """ reply
     reply to the tweet that triggered the request with the generated plot of the 
@@ -167,7 +178,7 @@ def reply(tweet_author, tweet_id):
     except Exception:            
         print(f"something went wrong with the reply to {tweet_author}")
     
-"""
+
 
 max_time = 300 #run for five minutes
 start_time = time.time()  # remember when we started
@@ -177,5 +188,5 @@ while (time.time() - start_time) < max_time:
     time.sleep(120)
     
 print(f"Waited around for {max_time} seconds plotbot mention, done now")    
-"""  
-plotit()
+
+
