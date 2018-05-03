@@ -13,7 +13,6 @@ Created on Fri Mar 23 16:49:13 2018
 
 # Dependencies
 import tweepy
-import config
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
