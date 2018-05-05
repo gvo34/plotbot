@@ -12,6 +12,7 @@ Created on Fri Mar 23 16:49:13 2018
 #example: @vero_guirlyn PlotBot analyze @cnn
 
 # Dependencies
+import tkinter
 import tweepy
 import os
 import pandas as pd
