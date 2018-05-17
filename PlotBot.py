@@ -12,11 +12,12 @@ Created on Fri Mar 23 16:49:13 2018
 #example: @vero_guirlyn PlotBot analyze @cnn
 
 # Dependencies
-#import tkinter
+import matplotlib
+matplotlib.use('agg')
+import matplotlib.pyplot as plt
 import tweepy
 import os
 import pandas as pd
-import matplotlib.pyplot as plt
 import time
 from datetime import datetime
 
